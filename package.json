@@ -121,7 +121,8 @@
       "WebSocket",
       "io",
       "ES",
-      "TypeDoc"
+      "TypeDoc",
+      "Bunyan"
     ]
   },
   "sharec": {
