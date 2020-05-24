@@ -1,17 +1,12 @@
-import BaseServer, { Logger, Reporter, BaseServerOptions } from '../base-server'
+import BaseServer, { Logger, BaseServerOptions } from '../base-server'
 
 export type ServerOptions = BaseServerOptions & {
   /**
-   * Report process/errors to CLI in pino JSON or in human readable
-   * format. It can be also a function to show current server status.
+   * Write logs to CLI in pino JSON or in human readable
+   * format. It can be also a custom logger.
    * Default is `'human'`.
-   */
-  reporter?: 'human' | 'json' | Reporter
-
-  /**
-   * Logger with custom settings.
    *
-   * For example, you can provide pino logger that streams logs to
+   * Custom logger example: pino logger that streams logs to
    * elasticsearch
    *
    * ```js
@@ -34,7 +29,7 @@ export type ServerOptions = BaseServerOptions & {
    *
    * Other logger examples can be found here http://getpino.io/#/docs/ecosystem
    */
-  logger?: Logger
+  logger?: 'human' | 'json' | Logger
 }
 
 /**

@@ -1,13 +1,11 @@
 import { actionCreatorFactory } from 'typescript-fsa'
 import { Server, Action, LoguxSubscribeAction } from '..'
-import * as pino from "pino";
 
 let server = new Server(
   Server.loadOptions(process, {
     subprotocol: '1.0.0',
-    reporter: 'human',
     supports: '1.x',
-    logger: pino({ name: 'logux' }),
+    logger: 'human',
     root: __dirname,
   })
 )

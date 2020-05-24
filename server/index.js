@@ -8,7 +8,7 @@ let BaseServer = require('../base-server')
 
 const AVAILABLE_OPTIONS = [
   'subprotocol', 'supports', 'timeout', 'ping', 'root', 'store', 'server',
-  'port', 'host', 'key', 'cert', 'env', 'logger', 'reporter', 'backend',
+  'port', 'host', 'key', 'cert', 'env', 'logger', 'backend',
   'controlMask', 'controlSecret', 'redis'
 ]
 
@@ -17,7 +17,7 @@ const ENVS = {
   port: 'LOGUX_PORT',
   key: 'LOGUX_KEY',
   cert: 'LOGUX_CERT',
-  reporter: 'LOGUX_REPORTER',
+  logger: 'LOGUX_LOGGER',
   redis: 'LOGUX_REDIS',
   controlMask: 'LOGUX_CONTROL_MASK',
   controlSecret: 'LOGUX_CONTROL_SECRET',
@@ -57,9 +57,9 @@ yargs
     describe: 'Path to SSL certificate',
     type: 'string'
   })
-  .option('reporter', {
-    alias: 'r',
-    describe: 'Reporter type',
+  .option('logger', {
+    alias: 'l',
+    describe: 'Logger type',
     choices: ['human', 'json'],
     type: 'string'
   })
@@ -110,24 +110,22 @@ class Server extends BaseServer {
   constructor (opts) {
     if (!opts) opts = { }
 
-    if (typeof opts.reporter !== 'function') {
-      opts.reporter = opts.reporter || 'human'
-      opts.reporter = createReporter(opts)
-    }
+    opts.logger = opts.logger || 'human'
+    let reporter = createReporter(opts)
 
     let initialized = false
     let onError = err => {
       if (initialized) {
         this.emitter.emit('fatal', err)
       } else {
-        opts.reporter('error', { err, fatal: true })
+        reporter('error', { err, fatal: true })
         process.exit(1)
       }
     }
     process.on('uncaughtException', onError)
     process.on('unhandledRejection', onError)
 
-    super(opts)
+    super({ ...opts, reporter })
 
     this.on('fatal', async () => {
       if (initialized) {
