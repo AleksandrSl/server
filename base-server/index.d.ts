@@ -464,6 +464,12 @@ type ReportersArguments = {
   }
 }
 
+export type Report = {
+  details: object
+  level: string
+  msg?: string
+}
+
 export type Reporter = <E extends keyof ReportersArguments>(
   event: E,
   payload: ReportersArguments[E]
@@ -738,6 +744,12 @@ export default class BaseServer<
    * @param listener Event listener.
    */
   on (event: 'subscriptionCancelled', listener: () => void): Unsubscribe
+
+  /**
+   * @param event The event name.
+   * @param listener Report listener.
+   */
+  on (event: 'report', listener: Reporter): Unsubscribe
 
   /**
    * Stop server and unbind all listeners.

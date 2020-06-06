@@ -95,7 +95,7 @@ it('uses passed logger instance', () => {
 
 it('creates JSON reporter', () => {
   let reporterStream = new MemoryStream()
-  let reporter = createReporter({ reporterStream })
+  let reporter = createReporter({ logger: { stream: reporterStream } })
   reporter('unknownType', {})
   expect(clean(reporterStream.string)).toMatchSnapshot()
 })
@@ -103,8 +103,10 @@ it('creates JSON reporter', () => {
 it('creates human reporter', () => {
   let reporterStream = new MemoryStream()
   let reporter = createReporter({
-    reporterStream,
-    logger: 'human',
+    logger: {
+      stream: reporterStream,
+      type: 'human'
+    },
     root: '/dir/'
   })
   reporter('unknownType', {})
@@ -112,24 +114,24 @@ it('creates human reporter', () => {
 })
 
 it('adds trailing slash to path', () => {
-  let reporter = createReporter({ logger: 'human', root: '/dir' })
+  let reporter = createReporter({ logger: { type: 'human' }, root: '/dir' })
   expect(reporter.logger.basepath).toEqual('/dir/')
 })
 
 it('uses colors by default', () => {
   delete process.env.NODE_ENV
-  let reporter = createReporter({ logger: 'human' })
+  let reporter = createReporter({ logger: { type: 'human' } })
   expect(reporter.logger.color).toBe(true)
 })
 
 it('uses color in development', () => {
-  let reporter = createReporter({ env: 'development', logger: 'human' })
+  let reporter = createReporter({ env: 'development', logger: { type: 'human' } })
   expect(reporter.logger.color).toBe(true)
 })
 
 it('uses environment variable to detect environment', () => {
   process.env.NODE_ENV = 'production'
-  let reporter = createReporter({ logger: 'human' })
+  let reporter = createReporter({ logger: { type: 'human' } })
   expect(reporter.logger.color).toBe(false)
 })
 

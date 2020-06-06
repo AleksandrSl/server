@@ -62,12 +62,10 @@ function createServer (opts?: TestServerOptions) {
 function createReporter (opts: TestServerOptions = {}) {
   let names: string[] = []
   let reports: [string, object][] = []
-  let app = createServer({
-    ...opts,
-    reporter (name: string, details: any) {
-      names.push(name)
-      reports.push([name, details])
-    }
+  let app = createServer(opts)
+  app.on('report', (name: string, details: any) => {
+    names.push(name)
+    reports.push([name, details])
   })
   return { names, reports, app }
 }
